@@ -2,6 +2,7 @@
 
 var httpreq = require('httpreq');
 var buttons = require('./buttons');
+var lamps = require('./lamps');
 var config = require('./config');
 
 // dit moeten we van de server krijgen:
@@ -49,7 +50,6 @@ var events = {
 
 	onQuizStart: function(data){
 		console.log('Quiz start');
-		//
 	},
 
 	onQuizEnd: function(data){
