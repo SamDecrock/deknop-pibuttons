@@ -2,11 +2,13 @@
 
 var httpreq = require('httpreq');
 var buttons = require('./buttons');
-var lamps = require('./lamps');
+var lamps = require('./lamps').lamps;
 var config = require('./config');
 
 // dit moeten we van de server krijgen:
 var username, posturl;
+
+lamps.on_all();
 
 // juiste plakkers op de knoppen plakken:
 var button2answer = {};
@@ -84,6 +86,7 @@ var events = {
 	}
 };
 
+/*
 // buttons in de gaten houden:
 buttons.watchButtons(function (err, buttonId){
 	if(err) return console.log(err);
@@ -108,3 +111,4 @@ buttons.watchButtons(function (err, buttonId){
 	}
 });
 
+*/
