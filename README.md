@@ -24,7 +24,11 @@ __app.js__ uitvoeren als root (anders geen toegang to IO):
     sudo -i node /home/pi/deknop-pibuttons/app/app.js
 
 ##Opgelet##
+Eerst netwerkkabel insteken, dan pas voeding insteken, anders geen ip adres.
+
 ```npm install``` niet vergeten als er packages bijkomen
+
+
 
 
 
