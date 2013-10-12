@@ -17,23 +17,29 @@ button2answer['orange'] = 'C';
 // verbinden met de websocket:
 var io = require('socket.io-client');
 console.log("connecting to socket");
-socketclient = io.connect(config.url);
+socket = io.connect(config.url);
+
+// tv ding:
+var registration_options = {
+	username: 'one',
+	type: 'tv'
+}
 
 // websocket events:
-socketclient.on('connect', function () {
-	console.log('socketclient connected');
-	socketclient.send('hi there');
+socket.on('connect', function () {
+	console.log('socket connected');
+	socket.emit('register', registration_options);
 });
 
-socketclient.on('disconnect', function () {
-	console.log('socketclient disconnected');
+socket.on('disconnect', function () {
+	console.log('socket disconnected');
 });
 
-socketclient.on('point', function(data){
+socket.on('point', function(data){
   //console.log('Point received: ' + JSON.stringify(data));
 
   switch(data.type){
-  	case "tv:start": events.onTvStart(data);break;	
+  	case "tv:start": events.onTvStart(data);break;
     case "quiz:start": events.onQuizStart(data);break;
     case "quiz:end": events.onQuizEnd(data);break;
     case "question:soon": events.onQuestionSoon(data);break;
@@ -69,16 +75,15 @@ var events = {
 
 	onQuestionEnd: function(data){
 		console.log('Question end');
-		//{"type":"question:end","time":8,"buttons":[],"passed":true} 
+		//{"type":"question:end","time":8,"buttons":[],"passed":true}
 	},
 
 	onScoreUpdate: function(data){
 		console.log('Score update');
 		//
-	}	
+	}
 };
 
-/*
 // buttons in de gaten houden:
 buttons.watchButtons(function (err, buttonId){
 	if(err) return console.log(err);
@@ -102,4 +107,4 @@ buttons.watchButtons(function (err, buttonId){
 		});
 	}
 });
-*/
+
