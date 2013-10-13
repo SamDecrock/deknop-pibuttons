@@ -1,31 +1,29 @@
 #!/usr/bin/env node
 
 var httpreq = require('httpreq');
+var http = require('http');
+var request = require('request');
 var buttons = require('./buttons');
 var lamps = require('./lamps').lamps;
 var config = require('./config');
-
-// dit moeten we van de server krijgen:
-var username, posturl;
-
-lamps.on_all();
-
-// juiste plakkers op de knoppen plakken:
-var button2answer = {};
-button2answer['pink'] = 'A';
-button2answer['blue'] = 'B';
-button2answer['orange'] = 'C';
 
 // verbinden met de websocket:
 var io = require('socket.io-client');
 console.log("connecting to socket");
 socket = io.connect(config.url);
 
+// juiste plakkers op de knoppen plakken:
+var button2answer = {};
+button2answer['pink'] = ['A', 1];
+button2answer['blue'] = ['B', 2];
+button2answer['orange'] = ['C', 3];
+
 // tv ding:
 var registration_options = {
-	username: 'one',
+	username: 'Adriaan',
 	type: 'tv'
-}
+};
+var current_question_id = null;
 
 // websocket events:
 socket.on('connect', function () {
@@ -39,6 +37,7 @@ socket.on('disconnect', function () {
 
 socket.on('point', function(data){
   //console.log('Point received: ' + JSON.stringify(data));
+  console.log("Current question " + current_question_id);
 
   switch(data.type){
   	case "tv:start": events.onTvStart(data);break;
@@ -54,10 +53,12 @@ socket.on('point', function(data){
 var events = {
 	onTvStart: function(data){
 		console.log("On TV start");
+		//lamps.quiz_start();
+		lamps.off_all();
 	},
 
 	onQuizStart: function(data){
-		console.log('Quiz start');
+		//console.log('Quiz start');
 	},
 
 	onQuizEnd: function(data){
@@ -66,18 +67,26 @@ var events = {
 	},
 
 	onQuestionSoon: function(data){
-		console.log('Question soon');
+		console.log('Question soon' + JSON.stringify(data));
+		//{"type":"question:soon","time":1.5,"id":0,"countdown":2,"buttons":[],"passed":true}
 		//{"type":"question:soon","time":4,"buttons":[],"passed":true}
+		//lamps.question_soon();
+		current_question_id = data.id;
 	},
 
 	onQuestionStart: function(data){
 		console.log('Question start');
 		//{"type":"question:start","time":6,"buttons":["A","B"],"passed":true,"countdown":2}
+		current_question_id = data.id;
+		lamps.on_all();
+
 	},
 
 	onQuestionEnd: function(data){
 		console.log('Question end');
 		//{"type":"question:end","time":8,"buttons":[],"passed":true}
+		//lamps.question_end();
+		lamps.off_all();
 	},
 
 	onScoreUpdate: function(data){
@@ -86,29 +95,37 @@ var events = {
 	}
 };
 
-/*
+
+function doAnswer(question_id, answer){
+	// http://localhost:9000/api/answer
+	console.log("Hallo knop");
+	lamps.answer(answer[1]);
+
+	request.post(
+		config.url + '/api/answer',
+	    { 
+	    	form: { 
+	    		username: registration_options.username,
+	    		id: question_id, 
+	    		answer: answer[0].toUpperCase()
+	    	} 
+	    },
+	    function (error, response, body) {
+	        if (!error && response.statusCode == 200) {
+	            console.log(body)
+	        }
+	    }
+	);
+}
+
+
 // buttons in de gaten houden:
 buttons.watchButtons(function (err, buttonId){
-	if(err) return console.log(err);
-
-	var response = {
-		username: username,
-		answer: button2answer[buttonId]
-	};
-
-	console.log("sending:");
-	console.log(response);
-
-	// ofwel via sockets:
-	if(socketclient.connected)
-		socketclient.send(response);
-
-	// ofwel via een POST:
-	if(posturl){
-		httpreq.post(posturl, {parameters: response}, function (err, res){
-			if(err) return console.log(err);
-		});
+	// pink, blue, orange
+	if(err){
+		return console.log(err);
 	}
+	var answer = button2answer[buttonId];
+	console.log("Button Id: " + buttonId + ", answer: " + answer[0] + ", question: " + current_question_id);
+	doAnswer(current_question_id, answer);
 });
-
-*/
