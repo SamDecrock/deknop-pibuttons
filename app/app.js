@@ -1,7 +1,4 @@
 #!/usr/bin/env node
-
-var httpreq = require('httpreq');
-var http = require('http');
 var request = require('request');
 var buttons = require('./buttons');
 var lamps = require('./lamps').lamps;
@@ -36,8 +33,7 @@ socket.on('disconnect', function () {
 });
 
 socket.on('point', function(data){
-  //console.log('Point received: ' + JSON.stringify(data));
-  console.log("Current question " + current_question_id);
+  console.log("Points: " + JSON.stringify(data) + ", current qid: " + current_question_id);
 
   switch(data.type){
   	case "tv:start": events.onTvStart(data);break;
@@ -59,12 +55,14 @@ var events = {
 	},
 
 	onQuizStart: function(data){
-		//console.log('Quiz start');
+		console.log('Quiz start');
+		lamps.disco();
 	},
 
 	onQuizEnd: function(data){
 		console.log('Quiz end');
 		//
+		lamps.off_all();
 	},
 
 	onQuestionSoon: function(data){
@@ -93,6 +91,11 @@ var events = {
 	onScoreUpdate: function(data){
 		console.log('Score update: ' + JSON.stringify(data));
 		//
+		if(data.correct){
+			lamps.onSuccess();
+		} else {
+			lamps.onErrorr();	
+		}
 	}
 };
 

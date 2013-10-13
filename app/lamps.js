@@ -11,20 +11,20 @@ var lamps = (function(){
     var lamps = 3;
 
 
-    function random_bri() {
+    function random_bri(){
         return Math.floor((Math.random()*hue_bri));
     }
 
-    function random_hue() {
+    function random_hue(){
         return Math.floor((Math.random()*hue_max));
     }
 
-    function random_sat() {
+    function random_sat(){
         return Math.floor((Math.random()*hue_sat));
     }
 
 
-    function lamp(settings) {
+    function lamp(settings){
 
         x = []
 
@@ -42,13 +42,13 @@ var lamps = (function(){
 
     // EFFECTS
 
-    function off_all() {
+    function off_all(){
         for (var i=1;i<=lamps;i++) {
             lamp({id: i, on: false});
         }
     }
 
-    function on_all() {
+    function on_all(){
         // Purple
         lamp({id: 1, on: true, hue: 50000, bri: 200, sat: sat_max});
 
@@ -61,14 +61,14 @@ var lamps = (function(){
     }
 
 
-    function flash(id) {
+    function flash(id){
         lamp({id: id, on: true, sat: sat_max, bri: sat_max, hue: random_hue()});
         setTimeout(function() { lamp({id: id, alert: 'select'}) }, 100);
         setTimeout(function() { lamp({id: id, on: false}) }, 200);
     }
 
 
-    function quiz_start() {
+    function quiz_start(){
         for (var id=1;id<=lamps;id++) {
             lamp({id: id, on: true, bri: 50, sat: 0, hue: 0});
             //setTimeout(function() { lamp({id: id, alert: 'select'}) }, 500);
@@ -77,14 +77,14 @@ var lamps = (function(){
         }
     }
 
-    function quiz_end() {
+    function quiz_end(){
         for (var id=1;id<=lamps;id++) {
             lamp({id: id, alert: 'select'});
             setTimeout(function() { lamp({id: id, on: false, sat: 0, bri: 0, hue: 10000, transitiontime: 30}) }, 500);
         }
     }
 
-    function question_soon() {
+    function question_soon(){
         for (var id=1;id<=lamps;id++) {
             lamp({id: id, sat: sat_max, bri: 100, hue: 10000});
             setTimeout(function() { lamp({id: id, alert: 'select'}) }, 500);
@@ -92,13 +92,13 @@ var lamps = (function(){
         }
     }
 
-    function question_start() {
+    function question_start(){
         for (var id=1;id<=lamps;id++) {
             lamp({id: id, sat: sat_max, bri: bri_max, hue: 10000});
         }
     }
 
-    function question_end() {
+    function question_end(){
         for (var id=1;id<=lamps;id++) {
             lamp({id: id, sat: sat_max, bri: 0, hue: 10000, transitiontime: 15});
         }
@@ -112,6 +112,41 @@ var lamps = (function(){
         }
     }
 
+    function disco(){
+        var hues = [0, 60000, 0, 25000, 60000, 0, 35000, 0, 60000, 25000, 10000];
+
+        function buts(hue){
+            lamp({id: 1, on:true, sat: 255, bri: 100, hue: hue});
+            lamp({id: 2, on:true, sat: 255, bri: 100, hue: hue});
+            lamp({id: 3, on:true, sat: 255, bri: 100, hue: hue});
+        }
+
+        function timeout(index){
+            setTimeout(function(){
+                if(index<hues.length){
+                    buts(hues[index]); 
+                    timeout(index+1);
+                }else{
+                    off_all();
+                }
+            }, 500);
+        }
+
+        timeout(0);
+    }
+
+    function onSuccess(){
+        for(var i=1;i<=lamps;i++){
+            lamp({id: i, on:true, sat: 255, bri: 200, hue: 25000});
+        }
+    }
+
+    function onErrorr(){
+        for(var i=1;i<=lamps;i++){
+            lamp({id: i, on:true, sat: 255, bri: 200, hue: 0});
+        }
+    }
+
     return {
         on_all: on_all,
         off_all: off_all,
@@ -120,7 +155,10 @@ var lamps = (function(){
         question_start: question_start,
         question_end: question_end,
         quiz_start: quiz_start,
-        answer: answer
+        answer: answer,
+        disco: disco,
+        onSuccess: onSuccess,
+        onErrorr: onErrorr
     }
 
 })();
