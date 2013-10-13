@@ -113,7 +113,7 @@ var lamps = (function(){
     }
 
     function disco(){
-        var hues = [0, 60000, 0, 25000, 60000, 0, 35000, 0, 60000, 25000, 10000];
+        var hues = [0, 60000, 0, 25000, 60000, 0, 35000, 0, 60000, 25000, 10000, 0, 60000, 0, 25000, 60000, 0, 35000, 0, 60000, 25000, 10000];
 
         function buts(hue){
             lamp({id: 1, on:true, sat: 255, bri: 100, hue: hue});
@@ -139,12 +139,14 @@ var lamps = (function(){
         for(var i=1;i<=lamps;i++){
             lamp({id: i, on:true, sat: 255, bri: 200, hue: 25000});
         }
+        setTimeout(function(){off_all()}, 9000);
     }
 
     function onErrorr(){
         for(var i=1;i<=lamps;i++){
             lamp({id: i, on:true, sat: 255, bri: 200, hue: 0});
         }
+        setTimeout(function(){off_all()}, 9000);
     }
 
     return {
