@@ -20,7 +20,7 @@ button2answer['orange'] = ['C', 3];
 
 // tv ding:
 var registration_options = {
-	username: 'Adriaan',
+	username: 'one',
 	type: 'tv'
 };
 var current_question_id = null;
@@ -52,7 +52,8 @@ socket.on('point', function(data){
 
 var events = {
 	onTvStart: function(data){
-		console.log("On TV start");
+		current_question_id = null;
+		console.log("On TV start: " + current_question_id);
 		//lamps.quiz_start();
 		lamps.off_all();
 	},
@@ -90,7 +91,7 @@ var events = {
 	},
 
 	onScoreUpdate: function(data){
-		console.log('Score update');
+		console.log('Score update: ' + JSON.stringify(data));
 		//
 	}
 };
