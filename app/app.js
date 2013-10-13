@@ -9,7 +9,7 @@ var config = require('./config');
 
 // verbinden met de websocket:
 var io = require('socket.io-client');
-console.log("connecting to socket");
+console.log("Connecting to socket ...");
 socket = io.connect(config.url);
 
 // juiste plakkers op de knoppen plakken:
@@ -27,7 +27,7 @@ var current_question_id = null;
 
 // websocket events:
 socket.on('connect', function () {
-	console.log('socket connected');
+	console.log('socket connected: ' + JSON.stringify(registration_options));
 	socket.emit('register', registration_options);
 });
 
